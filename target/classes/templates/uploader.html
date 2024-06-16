@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" >
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Scanner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/mycss.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/main.css}" />
+    <link rel="stylesheet" th:href="@{land.css}" />
+    <link  rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css"/>
+    <link rel="stylesheet" th:href="@{nav.css}" />
+</head>
+<body>
+<header class="header" style="border:#b3232c">
+    <nav class="navbar" style="background:#b3232c">
+        <a th:href="@{/index}" class="nav-logo"><img th:src="@{images/VelocisImage.png}" src="../static/images/VelocisImage.png" th:alt="VelocisTech"/></a>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link">About</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">Contact</a>
+            </li>
+            <li>
+                    <li class="nav-item" sec:authorize="isAnonymous()"><a class="nav-link" th:href="@{/signing}">Signin/Signup</a></li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
+                    <li class="nav-item" style="color: #c4ddf6" id="isauth" sec:authorize="isAuthenticated()">Welcome, <span sec:authentication="name"></span></li>
+            </li>
+        </ul>
+        <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+</header>
+<br/>
+<div class="container">
+    <form enctype="multipart/form-data" method="post" autofocus="true">
+        <div class="row" >
+            <div class="col-6 col-s-12">
+                <div class="form-group">
+        <div class="upload-container" >
+            <input type="file" name="file1" id="file1" onchange="uploadFile()"/>
+                        </div>
+                </div>
+            </div>
+            <div class="col-6 col-s-12">
+                <div class="form-group">
+        <div class="checkboxs ">
+            <label><input type="checkbox" id="cscan" name="cscan" value="1" checked>&nbsp;Scan with ClamAV</label>
+                <label><input type="checkbox" id="unpack" name="unpack" value="1" checked>&nbsp;unpack file</label>
+                <label><input type="checkbox" id="share" name="share" value="0" >&nbsp;share file </label>
+        </div>
+        </div>
+            </div>
+        </div>
+        <div class="col-7 col-s-12" style="white-space: pre">
+            <label id="taskidtext" style="display: none; color: #485461">generated file task id: <span id="taskid"> </span></label>
+        </div>
+    </form>
+</div>
+
+    <section style="padding-left: 10%" class="col-6 col-s-12">
+    <div>
+        <progress id="progressBar" value="0" max="100" style="width:200px; display: none"></progress>
+        <h5 id="status1"></h5>
+        <p id="loaded_n_total"></p>
+    </div>
+    <div class="alert alert-danger p-2 col-4 col-s-9" id="alert" role="alert" style="display: none;">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;Please first choose or drop any file(s)...</span>
+
+    </div>
+    <div class="alert alert-success" id="success" role="alert" style="display: none" >
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    </div>
+    <br/>
+        <button class="btn btn-info btn-sm  border-0" style="margin-left: 10%" type="button" id="btn-info" onclick="previousuploadedfiles()">
+            <span class="button__text">View Scanned Files</span></button>
+    </section>
+<!--        <div id="myProgress" class="myProgress p-3" style="display: none;" >-->
+<!--            <div id="myBar" class="myBar"></div>-->
+<!--        </div>-->
+    <section style="margin-left: 10%; margin-right:10%" >
+    <h4 class="p-3 col-6 col-s-12">Result:</h4>
+    <div id="resultdisplay" loading="lazy" style="padding-bottom: 3%" >
+        <label id="status" class="uneditable "></label>
+        <div class="spinner-border text-info btn-sm" id="sp" style="display: none" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+
+            <button class="btn btn-info" id="querybtn" type="button" style="display: none" onclick="queryResult()">
+            </button>
+        <br/>
+        <label id="result" class="uneditable" style="padding-bottom: 4px"></label>
+    </div>
+
+</section>
+<section class="px-4" id="resulttabs" style="display: none">
+    <h4>Scan Results</h4>
+<div class="m-4 container" style="margin-top: 10px;">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="nav-item">
+            <a href="#detections" class="nav-link active" data-bs-toggle="tab">Detections</a>
+        </li>
+        <li class="nav-item">
+            <a href="#details" class="nav-link" data-bs-toggle="tab">File Details</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="detections">
+            <h5 class="mt-2">Detection results</h5>
+            <p>
+            <table>
+            <tr><th>Clamav Results: &nbsp; &nbsp;&nbsp;</th><td><span id="clamav"></span></td></tr>
+            <tr><th>Static Results: &nbsp; &nbsp;&nbsp;</th><td><span id="static"></span></tr><br/>
+            <tr><th>Unpack Results: &nbsp; &nbsp;&nbsp;</th><td><span id="unpac"></span></td></tr><br/>
+            </table>
+            </p>
+
+        </div>
+        <div class="tab-pane fade" id="details">
+            <h5 class="mt-2">Basic file details</h5>
+            <p>
+            <table>
+            <tr><th>taskid&nbsp;&nbsp;<td><span  id="task-id"></span></td> </th></tr>
+            <tr><th>query_status &nbsp;&nbsp;<td><span id="stat"></span></td> </th></tr>
+            <tr><th>file_name &nbsp;&nbsp; <td><span  id="filename"></span></td> </th></tr>
+            <tr><th>file_size &nbsp;&nbsp; <td><span  id="filesize"></span></td> </th></tr>
+            <tr><th>file_type &nbsp;&nbsp;<td> <span  id="filetype"></span></td> </th></tr>
+            <tr><th>md5_hash &nbsp;&nbsp;<td><span id="md5"></span></td> </th></tr>
+            <tr><th>sha256_hash &nbsp;&nbsp;<td><span id="sha256"></span></td></th></tr>
+            <tr><th>sha1_hash &nbsp;&nbsp;<td><span id="sha1"></span></td></th></tr>
+            </table>
+            </p>
+        </div>
+    </div>
+</div>
+</section>
+<br/>
+<div class="footer row ko-site-footer text-center" style="padding-bottom: 2px">
+    Velocistech © 2018-<script>document.write(new Date().getFullYear())</script> All Rights Reserved. Tool used: YARA
+</div>
+<script type="text/javascript" th:src="@{/upload.js}"></script>
+<script type="text/javascript" th:src="@{/myjs.js}"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+</body>
+</html>

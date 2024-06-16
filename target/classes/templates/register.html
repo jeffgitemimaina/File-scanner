@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th=http://www.thymeleaf.org xmlns="http://www.w3.org/1999/html" >
+<head>
+    <meta charset="UTF-8" />
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" th:href="@{main.css}" />
+    <link rel="stylesheet" ref="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css"/>
+    <link rel="stylesheet" th:href="@{land.css}" />
+    <link rel="stylesheet" th:href="@{nav.css}" />
+</head>
+<body>
+<header class="header" style="border:#b3232c">
+    <nav class="navbar" style="background:#b3232c">
+        <a th:href="@{/index}" class="nav-logo"><img th:src="@{images/VelocisImage.png}" src="../static/images/VelocisImage.png" th:alt="VelocisTech"/></a>
+        <ul class="nav-menu">
+            <!--            <li class="nav-item">-->
+            <!--                <a href="#" class="nav-link">Services</a>-->
+            <!--            </li>-->
+            <!--            <li class="nav-item">-->
+            <!--                <a href="#" class="nav-link">Blog</a>-->
+            <!--            </li>-->
+            <li class="nav-item">
+                <a href="#" class="nav-link">About</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">Contact</a>
+            </li>
+        </ul>
+        <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+</header>
+<br/>
+
+<div class="login-container">
+    <div class="login-wrap">
+
+        <div class="login-html">
+<!--            <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>-->
+            <input id="tab-2" type="radio" name="tab" class="sign-up" checked><label for="tab-2" class="tab">Sign Up</label>
+            <div class="login-form">
+                <!-- Signing Up -->
+                <form action="#" method="get" >
+                    <div class="sign-up-htm" id="signup">
+                        &nbsp; &nbsp; <span id="registernmsg" style="color:#8fdfff"></span>
+                        &nbsp; &nbsp; <span id="email_msg" style="color:#fc4b4b;"></span>
+                        <div class="group">
+                            <label  class="label">First name</label>
+                            <input id="fname" type="text" class="input">
+                        </div>
+                        <div class="group">
+                            <label  class="label">Last name</label>
+                            <input id="lname" type="text" class="input ">
+                        </div>
+                        <div class="group">
+                            <label  class="label">Password</label>
+                            <input id="pass1" type="password" class="input " data-type="password" required>
+                            <span id = "message" style="color:#f35a5a"> </span>
+                        </div>
+                        <div class="group">
+                            <label class="label">Repeat Password</label>
+                            <input id="pass2" type="password" class="input " data-type="password" required>
+
+                        </div>
+                        <div class="group">
+                            <label class="label">Email Address</label>
+                            <input id="email" type="email" class="input" required>
+
+                        </div>
+                        <div class="group">
+
+                            <button type="submit" value="submit" onclick="Register()" class="button"> Sign Up </button>
+                            </br>
+                            <button type = "reset" value = "Reset" class="button btn-group-sm btn-sm" >Reset</button>
+                            <br/>
+                            <div class="foot-lnk">
+                                <a th:href="@{signing}"><label>Already Member?</label></a>
+                            </div>
+                        </div>
+                        <br/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer row ko-site-footer text-center ">
+    Velocistech © 2018-<script>document.write(new Date().getFullYear())</script> All Rights Reserved.&nbsp;<span>Tool used: YARA</span>
+</div>
+<script type="text/javascript" th:src="@{/upload.js}"></script>
+<script type="text/javascript" th:src="@{/myjs.js}"></script>
+</body>
+</html>

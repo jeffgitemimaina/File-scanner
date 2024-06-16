@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content=
+            "width=device-width, initial-scale=1.0" charset="UTF-8" />
+    <title>Scanned File</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/mycss.css}" rel="stylesheet" />
+<!--    <link th:href="@{/table.scss}" rel="stylesheet" />-->
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+    <link th:rel="stylesheet" th:href="@{assets/datatable/datatables.css}"/>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://datatables.net/media/css/site-examples.css">
+
+    <style>
+        .dataTables_paginate {
+            float: left !important;
+        }
+    </style>
+    <link rel="stylesheet" th:href="@{nav.css}" />
+</head>
+<body>
+<header class="header" style="border:#b3232c">
+    <nav class="navbar" style="background:#b3232c">
+        <a th:href="@{/index}" class="nav-logo"><img th:src="@{images/VelocisImage.png}" src="../static/images/VelocisImage.png" th:alt="VelocisTech"/></a>
+        <ul class="nav-menu">
+            <!--            <li class="nav-item">-->
+            <!--                <a href="#" class="nav-link">Services</a>-->
+            <!--            </li>-->
+            <!--            <li class="nav-item">-->
+            <!--                <a href="#" class="nav-link">Blog</a>-->
+            <!--            </li>-->
+            <li class="nav-item">
+                <a href="#" class="nav-link">About</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">Contact</a>
+            </li>
+        </ul>
+        <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+</header>
+<br/>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">Previous Scanned Files details</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#" onclick="window.history.back();">Back</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Scanned Files</a>
+                    <span class="sr-only">(current)</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container" >
+    <div class="row">
+        <div class="col-lg-11  mt-5 mb-5">
+            <table id="table_id" class="table table-bordered table-responsive" style="width: 100%">
+
+                <thead>
+                    <tr>
+                        <th >File name</th>
+                        <th >Task id</th>
+                        <th >Status</th>
+                        <th >Clamav Result</th>
+                        <th >Static Results</th>
+                        <th >Unpack Result</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(Files)}"><td>No Previous Scanned File Found</tr>
+                        <tr th:each="file: ${Files}">
+                        <td th:text="${file.filename}" />
+                        <td th:text="${file.taskid}" />
+                        <td th:text="${file.query_status}" />
+                        <td th:text="${(file.clamav_results)}">
+                        <td th:text="${(file.static_results)}">
+                        <td th:text="${(file.unpack_results)}">
+                    </tr>
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{assets/datatable/datatables.js}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#table_id').DataTable({
+            "processing": true,
+            "dom": "tp",
+            "ordering": false,
+            "pagingType": "simple",
+            "lengthMenu": [ 1 ]
+        });
+    });
+</script>
+<div class="footer row ko-site-footer text-center ">
+    Velocistech © 2018-<script>document.write(new Date().getFullYear())</script> All Rights Reserved.&nbsp;<span>Tool used: YARA</span>
+</div>
+<script type="text/javascript" th:src="@{/upload.js}"></script>
+<script type="text/javascript" th:src="@{/myjs.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
